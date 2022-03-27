@@ -8,7 +8,44 @@ import com.junpu.data.structure.tree.printer.BinaryTrees;
  */
 public class Main {
     public static void main(String[] args) {
-//        int[] arr = new int[]{7, 3, 5, 9, 4, 8, 2, 11, 6, 1, 10};
+        avlTest();
+    }
+
+    private static void avlTest() {
+        int[] arr = new int[]{7, 3, 5, 9, 4, 8, 2, 11, 6, 1, 10};
+        AVLTree<Integer> avl = new AVLTree<>();
+        for (int i : arr) {
+            avl.add(i);
+//            System.out.println("add " + i);
+//            BinaryTrees.println(avl);
+//            System.out.println("----------------------");
+        }
+        BinaryTrees.println(avl);
+        System.out.println("----------------------");
+
+        avl.remove(6);
+        System.out.println("---------------------- remove " + 6);
+        BinaryTrees.println(avl);
+
+        avl.remove(7);
+        System.out.println("---------------------- remove " + 7);
+        BinaryTrees.println(avl);
+
+        avl.remove(5);
+        System.out.println("---------------------- remove " + 5);
+        BinaryTrees.println(avl);
+
+        avl.remove(9);
+        System.out.println("---------------------- remove " + 9);
+        BinaryTrees.println(avl);
+
+        avl.remove(11);
+        System.out.println("---------------------- remove " + 11);
+        BinaryTrees.println(avl);
+    }
+
+    private static void bstTest() {
+        //        int[] arr = new int[]{7, 3, 5, 9, 4, 8, 2, 11, 6, 1, 10};
         int[] arr = new int[]{7, 2, 3, 1, 8};
         BinarySearchTree<Integer> bst = new BinarySearchTree<>();
         for (int i : arr) {

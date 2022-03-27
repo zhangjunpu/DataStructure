@@ -270,6 +270,17 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
             this.parent = parent;
         }
 
+        /**
+         * 如果是左子树
+         */
+        protected boolean isLeftChild() {
+            return parent != null && this == parent.left;
+        }
+
+        protected boolean isRightChild() {
+            return parent != null && this == parent.right;
+        }
+
         @Override
         public String toString() {
             String parentStr = "null";
