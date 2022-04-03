@@ -3,10 +3,12 @@ package com.junpu.data.structure.tree;
 import java.util.Comparator;
 
 /**
+ * AVL树
+ *
  * @author junpu
  * @date 2022/3/27
  */
-public class AVLTree<T> extends BinarySearchTree<T> {
+public class AVLTree<T> extends BalanceBinarySearchTree<T> {
 
     public AVLTree() {
         this(null);
@@ -21,7 +23,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         while ((node = node.parent) != null) {
             if (isBalanced(node)) { // 节点平衡
                 // 更新高度
-                avlNode(node).updateHeight();
+                updateHeight(node);
             } else { // 节点不平衡
                 // 恢复平衡
                 restoreBalance(node);
@@ -31,11 +33,11 @@ public class AVLTree<T> extends BinarySearchTree<T> {
     }
 
     @Override
-    protected void afterRemove(Node<T> node) {
+    protected void afterRemove(Node<T> node, Node<T> replacement) {
         while ((node = node.parent) != null) {
             if (isBalanced(node)) { // 节点平衡
                 // 更新高度
-                avlNode(node).updateHeight();
+                updateHeight(node);
             } else { // 节点不平衡
                 // 恢复平衡
                 restoreBalance(node);
@@ -46,10 +48,9 @@ public class AVLTree<T> extends BinarySearchTree<T> {
     /**
      * 恢复平衡
      */
-    private void restoreBalance(Node<T> node) {
-        AVLNode<T> g = avlNode(node);
-        AVLNode<T> p = avlNode(g.tallerChild());
-        AVLNode<T> n = avlNode(p.tallerChild());
+    private void restoreBalance(Node<T> g) {
+        Node<T> p = ((AVLNode<T>) g).tallerChild();
+        Node<T> n = ((AVLNode<T>) p).tallerChild();
 
         if (p.isLeftChild()) { // L
             if (n.isLeftChild()) { // LL
@@ -68,53 +69,12 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         }
     }
 
-    /**
-     * 左旋
-     */
-    private void rotateLeft(AVLNode<T> g) {
-        AVLNode<T> p = avlNode(g.right);
-        Node<T> child = p.left;
-
-        g.right = child;
-        p.left = g;
-
-        afterRotate(g, p, child);
-    }
-
-    /**
-     * 右旋
-     */
-    private void rotateRight(AVLNode<T> g) {
-        AVLNode<T> p = avlNode(g.left);
-        Node<T> child = p.right;
-
-        g.left = child;
-        p.right = g;
-
-        afterRotate(g, p, child);
-    }
-
-    /**
-     * 旋转后
-     */
-    private void afterRotate(AVLNode<T> g, AVLNode<T> p, Node<T> child) {
-        // 更新 child.parent
-        if (child != null) child.parent = g;
-
-        // 更新 p.parent
-        if (g.isLeftChild()) {
-            g.parent.left = p;
-        } else if (g.isRightChild()) {
-            g.parent.right = p;
-        } else {
-            root = p;
-        }
-        p.parent = g.parent;
-        g.parent = p;
-
+    @Override
+    protected void afterRotate(Node<T> g, Node<T> p, Node<T> child) {
+        super.afterRotate(g, p, child);
         // 更新高度
-        g.updateHeight();
-        p.updateHeight();
+        updateHeight(g);
+        updateHeight(p);
     }
 
     @Override
@@ -126,14 +86,14 @@ public class AVLTree<T> extends BinarySearchTree<T> {
      * 节点是否平衡
      */
     private boolean isBalanced(Node<T> node) {
-        return Math.abs(avlNode(node).balanceFactor()) <= 1;
+        return Math.abs(((AVLNode<T>) node).balanceFactor()) <= 1;
     }
 
     /**
-     * 强制转换
+     * 更新高度
      */
-    private static <T> AVLNode<T> avlNode(Node<T> node) {
-        return (AVLNode<T>) node;
+    private void updateHeight(Node<T> node) {
+        ((AVLNode<T>) node).updateHeight();
     }
 
     private static class AVLNode<T> extends Node<T> {
@@ -174,14 +134,14 @@ public class AVLTree<T> extends BinarySearchTree<T> {
          * 左子节点的高度
          */
         private int leftHeight() {
-            return left == null ? 0 : avlNode(left).height;
+            return left == null ? 0 : ((AVLNode<T>) left).height;
         }
 
         /**
          * 右子节点的高度
          */
         private int rightHeight() {
-            return right == null ? 0 : avlNode(right).height;
+            return right == null ? 0 : ((AVLNode<T>) right).height;
         }
 
     }

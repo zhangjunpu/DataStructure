@@ -7,6 +7,8 @@ import java.util.Queue;
 import java.util.Stack;
 
 /**
+ * 二叉树
+ *
  * @author junpu
  * @date 2022/3/25
  */
@@ -277,8 +279,20 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
             return parent != null && this == parent.left;
         }
 
+        /**
+         * 如果是右子树
+         */
         protected boolean isRightChild() {
             return parent != null && this == parent.right;
+        }
+
+        /**
+         * 兄弟节点
+         */
+        protected Node<T> sibling() {
+            if (isLeftChild()) return parent.right;
+            if (isRightChild()) return parent.left;
+            return null;
         }
 
         @Override

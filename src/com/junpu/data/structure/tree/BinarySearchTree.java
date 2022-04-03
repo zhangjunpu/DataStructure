@@ -3,6 +3,7 @@ package com.junpu.data.structure.tree;
 import java.util.Comparator;
 
 /**
+ * 二叉搜索树
  * @author junpu
  * @date 2022/3/22
  */
@@ -24,6 +25,9 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
         if (root == null) {
             root = createNode(item, null);
             size++;
+
+            // 新添加节点之后的处理
+            afterAdd(root);
             return;
         }
 
@@ -84,27 +88,20 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
             node = s;
         }
 
+        // 能来到这里，说明 node 节点的度只能是 0 或 1
         Node<T> child = node.left != null ? node.left : node.right;
-        if (child != null) { // 说明节点的度为1
+        if (child != null) { // child 不为空，说明节点的度为1
             child.parent = node.parent;
-            if (node.parent == null) { // 根节点
-                root = child;
-            } else if (node.parent.left == node) {
-                node.parent.left = child;
-            } else {
-                node.parent.right = child;
-            }
-        } else { // 节点的度为0
-            if (node.parent == null) { // 根节点
-                root = null;
-            } else if (node.parent.left == node) {
-                node.parent.left = null;
-            } else {
-                node.parent.right = null;
-            }
+        }
+        if (node.parent == null) { // 根节点
+            root = child;
+        } else if (node == node.parent.left) {
+            node.parent.left = child;
+        } else {
+            node.parent.right = child;
         }
 
-        afterRemove(node);
+        afterRemove(node, child);
     }
 
     @Override
@@ -152,7 +149,7 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
     /**
      * 删除之后，用于子类平衡旋转操作
      */
-    protected void afterRemove(Node<T> node) {
+    protected void afterRemove(Node<T> node, Node<T> replacement) {
     }
 
     /**

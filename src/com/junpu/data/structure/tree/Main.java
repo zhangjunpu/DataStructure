@@ -8,10 +8,32 @@ import com.junpu.data.structure.tree.printer.BinaryTrees;
  */
 public class Main {
     public static void main(String[] args) {
-        avlTest();
+//        avlTreeTest();
+        rbTreeTest();
     }
 
-    private static void avlTest() {
+    private static void rbTreeTest() {
+        int[] arr = new int[]{77, 97, 40, 26, 34, 39, 14, 62, 82, 6, 96, 84, 72, 66, 80};
+        RedBlackTree<Integer> rb = new RedBlackTree<>();
+        for (int i : arr) {
+            rb.add(i);
+//            System.out.println("add " + i);
+//            BinaryTrees.println(rb);
+//            System.out.println("----------------------");
+        }
+        BinaryTrees.println(rb);
+        System.out.println("----------------------");
+
+        for (int i : arr) {
+            rb.remove(i);
+            System.out.println("remove " + i);
+            BinaryTrees.println(rb);
+            System.out.println("----------------------");
+        }
+
+    }
+
+    private static void avlTreeTest() {
         int[] arr = new int[]{7, 3, 5, 9, 4, 8, 2, 11, 6, 1, 10};
         AVLTree<Integer> avl = new AVLTree<>();
         for (int i : arr) {
