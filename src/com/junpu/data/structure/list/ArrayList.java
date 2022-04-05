@@ -8,11 +8,10 @@ import java.util.Arrays;
  * @author junpu
  * @date 2022/4/5
  */
-public class ArrayList<T> implements List<T> {
+public class ArrayList<T> extends AbstractList<T> {
 
     private static final int DEFAULT_CAPACITY = 10;
 
-    private int size = 0;
     private T[] items;
 
     public ArrayList() {
@@ -25,31 +24,11 @@ public class ArrayList<T> implements List<T> {
     }
 
     @Override
-    public int size() {
-        return size;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    @Override
     public void clear() {
         for (int i = 0; i < size; i++) {
             items[i] = null;
         }
         size = 0;
-    }
-
-    @Override
-    public boolean contains(T item) {
-        return indexOf(item) != -1;
-    }
-
-    @Override
-    public void add(T item) {
-        add(size, item);
     }
 
     @Override
@@ -123,24 +102,6 @@ public class ArrayList<T> implements List<T> {
         if (newCapacity < size) return;
         items = Arrays.copyOf(items, newCapacity);
         System.out.println("缩容：" + oldCapacity + " -> " + newCapacity);
-    }
-
-    /**
-     * 范围检查
-     */
-    private void rangeCheck(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("index out of bounds. index=" + index + ", size=" + size);
-        }
-    }
-
-    /**
-     * 范围检查
-     */
-    private void rangeCheckForAdd(int index) {
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("index out of bounds. index=" + index + ", size=" + size);
-        }
     }
 
     @Override

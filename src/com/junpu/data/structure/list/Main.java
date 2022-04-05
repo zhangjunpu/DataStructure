@@ -7,7 +7,26 @@ package com.junpu.data.structure.list;
 public class Main {
     public static void main(String[] args) {
 //        arrayListTest();
-        singleLinkedListTest();
+//        singleLinkedListTest();
+        linkedListTest();
+    }
+
+    private static void linkedListTest() {
+        List<Integer> list = new LinkedList<>();
+//        testList(list);
+
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        System.out.println(list);
+        list.add(1, 10);
+        System.out.println(list);
+        list.set(0, 8);
+        System.out.println(list);
+        list.remove(3);
+        System.out.println(list);
+        System.out.println(list.get(1));
+        System.out.println(list.indexOf(11));
     }
 
     private static void singleLinkedListTest() {

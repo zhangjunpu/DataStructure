@@ -1,17 +1,19 @@
 package com.junpu.data.structure.list;
 
 /**
- * 单链表
+ * 双向链表
  *
  * @author junpu
  * @date 2022/4/5
  */
-public class SingleLinkedList<T> extends AbstractList<T> {
+public class LinkedList<T> extends AbstractList<T> {
     private Node<T> first;
+    private Node<T> last;
 
     @Override
     public void clear() {
         first = null;
+        last = null;
         size = 0;
     }
 
@@ -20,10 +22,23 @@ public class SingleLinkedList<T> extends AbstractList<T> {
         rangeCheckForAdd(index);
 
         if (index == 0) {
-            first = new Node<>(item, first);
+            Node<T> next = first;
+            first = new Node<>(null, item, next);
+            if (next != null) {
+                next.prev = first;
+            } else { // size == 0
+                last = first;
+            }
         } else {
             Node<T> prev = findNode(index - 1);
-            prev.next = new Node<>(item, prev.next);
+            Node<T> next = prev.next;
+            Node<T> node = new Node<>(prev, item, next);
+            prev.next = node;
+            if (next != null) {
+                next.prev = node;
+            } else { // index == size
+                last = node;
+            }
         }
         size++;
     }
@@ -31,17 +46,25 @@ public class SingleLinkedList<T> extends AbstractList<T> {
     @Override
     public T remove(int index) {
         rangeCheck(index);
-        Node<T> removeNode;
-        if (index == 0) {
-            removeNode = first;
-            first = first.next;
+
+        Node<T> node = findNode(index);
+        Node<T> prev = node.prev;
+        Node<T> next = node.next;
+
+        if (prev == null) {
+            first = next;
         } else {
-            Node<T> prev = findNode(index - 1);
-            removeNode = prev.next;
-            prev.next = removeNode.next;
+            prev.next = next;
         }
+
+        if (next == null) {
+            last = prev;
+        } else {
+            next.prev = prev;
+        }
+
         size--;
-        return removeNode.item;
+        return node.item;
     }
 
     @Override
@@ -79,9 +102,17 @@ public class SingleLinkedList<T> extends AbstractList<T> {
      */
     private Node<T> findNode(int index) {
         rangeCheck(index);
-        Node<T> node = first;
-        for (int i = 0; i < index; i++) {
-            node = node.next;
+        Node<T> node;
+        if (index < (size >> 1)) {
+            node = first;
+            for (int i = 0; i < index; i++) {
+                node = node.next;
+            }
+        } else {
+            node = last;
+            for (int i = size - 1; i > index; i--) {
+                node = node.prev;
+            }
         }
         return node;
     }
@@ -92,8 +123,8 @@ public class SingleLinkedList<T> extends AbstractList<T> {
         sb.append("[");
         Node<T> node = first;
         for (int i = 0; i < size; i++) {
-            sb.append(node.item);
-            if (i < size - 1) sb.append(",");
+            sb.append(node);
+            if (i < size - 1) sb.append(", ");
             node = node.next;
         }
         sb.append("]");
@@ -103,14 +134,23 @@ public class SingleLinkedList<T> extends AbstractList<T> {
     private static class Node<T> {
         T item;
         Node<T> next;
+        Node<T> prev;
 
         public Node(T item) {
             this.item = item;
         }
 
-        public Node(T item, Node<T> next) {
+        public Node(Node<T> prev, T item, Node<T> next) {
             this.item = item;
             this.next = next;
+            this.prev = prev;
+        }
+
+        @Override
+        public String toString() {
+            Object p = prev != null ? prev.item : null;
+            Object n = next != null ? next.item : null;
+            return p + "_" + item + "_" + n;
         }
     }
 }
