@@ -12,7 +12,7 @@ public class ArrayList<T> implements List<T> {
 
     private static final int DEFAULT_CAPACITY = 10;
 
-    private int size;
+    private int size = 0;
     private T[] items;
 
     public ArrayList() {
@@ -36,6 +36,9 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public void clear() {
+        for (int i = 0; i < size; i++) {
+            items[i] = null;
+        }
         size = 0;
     }
 
@@ -127,7 +130,7 @@ public class ArrayList<T> implements List<T> {
      */
     private void rangeCheck(int index) {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("index out of bounds.");
+            throw new IndexOutOfBoundsException("index out of bounds. index=" + index + ", size=" + size);
         }
     }
 
@@ -136,7 +139,7 @@ public class ArrayList<T> implements List<T> {
      */
     private void rangeCheckForAdd(int index) {
         if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("index out of bounds.");
+            throw new IndexOutOfBoundsException("index out of bounds. index=" + index + ", size=" + size);
         }
     }
 
