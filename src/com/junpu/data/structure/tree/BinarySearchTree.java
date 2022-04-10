@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 /**
  * 二叉搜索树
+ *
  * @author junpu
  * @date 2022/3/22
  */
@@ -31,10 +32,10 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
             return;
         }
 
-        Node<T> parent = root;
+        Node<T> parent;
         Node<T> temp = root;
-        int compare = 0;
-        while (temp != null) {
+        int compare;
+        do {
             compare = compare(item, temp.item);
             parent = temp;
             if (compare > 0) {
@@ -44,7 +45,8 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
             } else {
                 return;
             }
-        }
+        } while (temp != null);
+
         Node<T> node = createNode(item, parent);
         if (compare > 0) parent.right = node;
         if (compare < 0) parent.left = node;
