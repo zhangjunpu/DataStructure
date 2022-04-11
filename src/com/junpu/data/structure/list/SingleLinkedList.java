@@ -22,7 +22,7 @@ public class SingleLinkedList<T> extends AbstractList<T> {
         if (index == 0) {
             first = new Node<>(item, first);
         } else {
-            Node<T> prev = findNode(index - 1);
+            Node<T> prev = node(index - 1);
             prev.next = new Node<>(item, prev.next);
         }
         size++;
@@ -36,7 +36,7 @@ public class SingleLinkedList<T> extends AbstractList<T> {
             removeNode = first;
             first = first.next;
         } else {
-            Node<T> prev = findNode(index - 1);
+            Node<T> prev = node(index - 1);
             removeNode = prev.next;
             prev.next = removeNode.next;
         }
@@ -46,7 +46,7 @@ public class SingleLinkedList<T> extends AbstractList<T> {
 
     @Override
     public T set(int index, T item) {
-        Node<T> node = findNode(index);
+        Node<T> node = node(index);
         T oleItem = node.item;
         node.item = item;
         return oleItem;
@@ -54,7 +54,7 @@ public class SingleLinkedList<T> extends AbstractList<T> {
 
     @Override
     public T get(int index) {
-        return findNode(index).item;
+        return node(index).item;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class SingleLinkedList<T> extends AbstractList<T> {
     /**
      * 获取 index 位置的节点
      */
-    private Node<T> findNode(int index) {
+    private Node<T> node(int index) {
         rangeCheck(index);
         Node<T> node = first;
         for (int i = 0; i < index; i++) {

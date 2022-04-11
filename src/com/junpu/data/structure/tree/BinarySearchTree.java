@@ -32,27 +32,26 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
             return;
         }
 
-        Node<T> parent;
-        Node<T> temp = root;
-        int compare;
+        Node<T> parent, node = root;
+        int cmp;
         do {
-            compare = compare(item, temp.item);
-            parent = temp;
-            if (compare > 0) {
-                temp = temp.right;
-            } else if (compare < 0) {
-                temp = temp.left;
+            cmp = compare(item, node.item);
+            parent = node;
+            if (cmp > 0) {
+                node = node.right;
+            } else if (cmp < 0) {
+                node = node.left;
             } else {
                 return;
             }
-        } while (temp != null);
+        } while (node != null);
 
-        Node<T> node = createNode(item, parent);
-        if (compare > 0) parent.right = node;
-        if (compare < 0) parent.left = node;
+        Node<T> newNode = createNode(item, parent);
+        if (cmp > 0) parent.right = newNode;
+        if (cmp < 0) parent.left = newNode;
         size++;
 
-        afterAdd(node);
+        afterAdd(newNode);
     }
 
     @Override

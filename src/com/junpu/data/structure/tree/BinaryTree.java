@@ -14,7 +14,7 @@ import java.util.Stack;
  */
 public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
     protected int size;
-    protected BinarySearchTree.Node<T> root;
+    protected Node<T> root;
 
     @Override
     public int size() {
@@ -35,12 +35,12 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
     /**
      * 前序遍历
      */
-    public void preorder(BinarySearchTree.Visitor<T> visitor) {
+    public void preorder(Visitor<T> visitor) {
         if (visitor == null) return;
         preorder(root, visitor);
     }
 
-    private boolean preorder(BinarySearchTree.Node<T> node, BinarySearchTree.Visitor<T> visitor) {
+    private boolean preorder(Node<T> node, Visitor<T> visitor) {
         if (node == null) return false;
         boolean isInterrupt = visitor.visit(node.item);
         if (!isInterrupt) isInterrupt = preorder(node.left, visitor);
@@ -51,17 +51,17 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
     /**
      * 前序遍历 - 迭代
      */
-    public void preorderTraversal(BinarySearchTree.Visitor<T> visitor) {
+    public void preorderTraversal(Visitor<T> visitor) {
         if (visitor == null) return;
-        Stack<BinarySearchTree.Node<T>> stack = new Stack<>();
-        BinarySearchTree.Node<T> node = root;
+        Stack<Node<T>> stack = new Stack<>();
+        Node<T> node = root;
         while (node != null || !stack.isEmpty()) {
             while (node != null) {
                 visitor.visit(node.item);
                 stack.push(node);
                 node = node.left;
             }
-            BinarySearchTree.Node<T> tmp = stack.pop();
+            Node<T> tmp = stack.pop();
             node = tmp.right;
         }
     }
@@ -69,12 +69,12 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
     /**
      * 中序遍历
      */
-    public void inorder(BinarySearchTree.Visitor<T> visitor) {
+    public void inorder(Visitor<T> visitor) {
         if (visitor == null) return;
         inorder(root, visitor);
     }
 
-    private void inorder(BinarySearchTree.Node<T> node, BinarySearchTree.Visitor<T> visitor) {
+    private void inorder(Node<T> node, Visitor<T> visitor) {
         if (node == null) return;
         inorder(node.left, visitor);
         visitor.visit(node.item);
@@ -84,18 +84,18 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
     /**
      * 中序遍历 - 迭代
      */
-    public void inorderTraversal(BinarySearchTree.Visitor<T> visitor) {
+    public void inorderTraversal(Visitor<T> visitor) {
         if (visitor == null) return;
 
-        Stack<BinarySearchTree.Node<T>> stack = new Stack<>();
+        Stack<Node<T>> stack = new Stack<>();
 
-        BinarySearchTree.Node<T> node = root;
+        Node<T> node = root;
         while (node != null || !stack.isEmpty()) {
             while (node != null) {
                 stack.push(node);
                 node = node.left;
             }
-            BinarySearchTree.Node<T> tmp = stack.pop();
+            Node<T> tmp = stack.pop();
             visitor.visit(tmp.item);
             node = tmp.right;
         }
@@ -104,12 +104,12 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
     /**
      * 后序遍历
      */
-    public void postorder(BinarySearchTree.Visitor<T> visitor) {
+    public void postorder(Visitor<T> visitor) {
         if (visitor == null) return;
         postorder(root, visitor);
     }
 
-    private void postorder(BinarySearchTree.Node<T> node, BinarySearchTree.Visitor<T> visitor) {
+    private void postorder(Node<T> node, Visitor<T> visitor) {
         if (node == null) return;
         postorder(node.left, visitor);
         postorder(node.right, visitor);
@@ -119,18 +119,18 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
     /**
      * 后序遍历 - 迭代
      */
-    public void postorderTraversal(BinarySearchTree.Visitor<T> visitor) {
+    public void postorderTraversal(Visitor<T> visitor) {
         if (visitor == null) return;
-        Stack<BinarySearchTree.Node<T>> stackReverse = new Stack<>();
-        Stack<BinarySearchTree.Node<T>> stack = new Stack<>();
-        BinarySearchTree.Node<T> node = root;
+        Stack<Node<T>> stackReverse = new Stack<>();
+        Stack<Node<T>> stack = new Stack<>();
+        Node<T> node = root;
         while (node != null || !stack.isEmpty()) {
             while (node != null) {
                 stackReverse.push(node);
                 stack.push(node);
                 node = node.right;
             }
-            BinarySearchTree.Node<T> tmp = stack.pop();
+            Node<T> tmp = stack.pop();
             node = tmp.left;
         }
 
@@ -142,12 +142,12 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
     /**
      * 层序遍历
      */
-    public void levelOrder(BinarySearchTree.Visitor<T> visitor) {
+    public void levelOrder(Visitor<T> visitor) {
         if (root == null || visitor == null) return;
-        Queue<BinarySearchTree.Node<T>> queue = new LinkedList<>();
+        Queue<Node<T>> queue = new LinkedList<>();
         queue.offer(root);
         while (!queue.isEmpty()) {
-            BinarySearchTree.Node<T> node = queue.poll();
+            Node<T> node = queue.poll();
             visitor.visit(node.item);
             if (node.left != null) queue.offer(node.left);
             if (node.right != null) queue.offer(node.right);
@@ -161,7 +161,7 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
         return depth(root);
     }
 
-    private int depth(BinarySearchTree.Node<T> node) {
+    private int depth(Node<T> node) {
         if (node == null) return 0;
         int leftDepth = depth(node.left);
         int rightDepth = depth(node.right);
@@ -173,11 +173,11 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
      */
     public int height() {
         int height = 0;
-        Queue<BinarySearchTree.Node<T>> queue = new LinkedList<>();
+        Queue<Node<T>> queue = new LinkedList<>();
         queue.offer(root);
         int tmp = 1;
         while (!queue.isEmpty()) {
-            BinarySearchTree.Node<T> node = queue.poll();
+            Node<T> node = queue.poll();
             tmp--;
             if (node.left != null) queue.offer(node.left);
             if (node.right != null) queue.offer(node.right);
@@ -193,11 +193,11 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
      * 是否为完全二叉树
      */
     public boolean isCompleteBinaryTree() {
-        Queue<BinarySearchTree.Node<T>> queue = new LinkedList<>();
+        Queue<Node<T>> queue = new LinkedList<>();
         queue.offer(root);
         boolean isLeaf = false;
         while (!queue.isEmpty()) {
-            BinarySearchTree.Node<T> node = queue.poll();
+            Node<T> node = queue.poll();
             if (isLeaf && (node.left != null || node.right != null)) return false;
             if (node.left != null)
                 queue.offer(node.left);
@@ -215,10 +215,10 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
     /**
      * 前驱结点
      */
-    protected BinarySearchTree.Node<T> predecessor(BinarySearchTree.Node<T> node) {
+    protected Node<T> predecessor(Node<T> node) {
         if (node == null) return null;
 
-        BinarySearchTree.Node<T> tmp;
+        Node<T> tmp;
         if (node.left != null) {
             tmp = node.left;
             while (tmp.right != null) {
@@ -240,9 +240,9 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
     /**
      * 后继结点
      */
-    protected BinarySearchTree.Node<T> successor(BinarySearchTree.Node<T> node) {
+    protected Node<T> successor(Node<T> node) {
         if (node == null) return null;
-        BinarySearchTree.Node<T> tmp;
+        Node<T> tmp;
         if (node.right != null) {
             tmp = node.right;
             while (tmp.left != null) {
@@ -301,10 +301,6 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
             if (parent != null) parentStr = parent.item.toString();
             return item + "_(" + parentStr + ")";
         }
-    }
-
-    public interface Visitor<T> {
-        boolean visit(T item);
     }
 
     @Override

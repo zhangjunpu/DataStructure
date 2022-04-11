@@ -30,7 +30,7 @@ public class LinkedList<T> extends AbstractList<T> {
                 last = first;
             }
         } else {
-            Node<T> prev = findNode(index - 1);
+            Node<T> prev = node(index - 1);
             Node<T> next = prev.next;
             Node<T> node = new Node<>(prev, item, next);
             prev.next = node;
@@ -47,7 +47,7 @@ public class LinkedList<T> extends AbstractList<T> {
     public T remove(int index) {
         rangeCheck(index);
 
-        Node<T> node = findNode(index);
+        Node<T> node = node(index);
         Node<T> prev = node.prev;
         Node<T> next = node.next;
 
@@ -69,7 +69,7 @@ public class LinkedList<T> extends AbstractList<T> {
 
     @Override
     public T set(int index, T item) {
-        Node<T> node = findNode(index);
+        Node<T> node = node(index);
         T oleItem = node.item;
         node.item = item;
         return oleItem;
@@ -77,7 +77,7 @@ public class LinkedList<T> extends AbstractList<T> {
 
     @Override
     public T get(int index) {
-        return findNode(index).item;
+        return node(index).item;
     }
 
     @Override
@@ -100,7 +100,7 @@ public class LinkedList<T> extends AbstractList<T> {
     /**
      * 获取 index 位置的节点
      */
-    private Node<T> findNode(int index) {
+    private Node<T> node(int index) {
         rangeCheck(index);
         Node<T> node;
         if (index < (size >> 1)) {
