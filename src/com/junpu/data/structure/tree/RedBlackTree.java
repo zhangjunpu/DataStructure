@@ -47,12 +47,12 @@ public class RedBlackTree<T> extends BalanceBinarySearchTree<T> {
         // 父节点为黑色，什么都不用做
         if (isBlack(parent)) return;
 
-        // 能来到这，说明父节点是红色
+        // 能来到这，说明父节点是红色，要看叔父节点的颜色
         Node<T> uncle = parent.sibling();
         // 不管以下的哪种情况，祖父节点都要染红，所以直接提取到这里染红
         Node<T> grand = red(parent.parent);
 
-        // 如果 uncle 节点是红色
+        // 如果叔父节点是红色，将父节点和叔父节点都染黑，然后将祖父节点当成新节点，递归
         if (isRed(uncle)) {
             black(parent);
             black(uncle);
@@ -60,7 +60,7 @@ public class RedBlackTree<T> extends BalanceBinarySearchTree<T> {
             return;
         }
 
-        // 来到这，说明 uncle 节点是黑色
+        // 叔父节点是黑色
         if (parent.isLeftChild()) { // L
             if (node.isLeftChild()) { // LL
                 black(parent);
@@ -116,24 +116,29 @@ public class RedBlackTree<T> extends BalanceBinarySearchTree<T> {
         Node<T> parent = node.parent;
         if (parent == null) return;
 
-        // 来到这，说明 node 节点是黑色叶子节点【B树下溢】
+        // 来到这，说明删除的是黑色叶子节点【B树下溢】
+        // 判断被删除的 node 是做还是右
         boolean isLeft = parent.left == null || node.isLeftChild();
         Node<T> sibling = isLeft ? parent.right : parent.left;
-
-        // 来到这，说明兄弟节点是黑色
-        if (isLeft) {
-            // 兄弟节点为红色
+        if (isLeft) { // 被删除的节点是父节点的左子节点，兄弟节点在右边
+            // 兄弟节点为红色，对父节点进行旋转，旋转后的父节点，继承了兄弟节点的黑色子节点，情况又回到了兄弟节点是黑色的情况
             if (isRed(sibling)) {
                 black(sibling);
                 red(parent);
                 rotateLeft(parent);
-                sibling = parent.right;
+                sibling = parent.right; // 更换兄弟
             }
 
-            // 兄弟节点至少有一个红色子节点（相当于B树的跟兄弟节点借）
-            if (isRed(sibling.left) || isRed(sibling.right)) {
+            // 兄弟节点没有一个红色子节点，父节点要向下跟兄弟节点合并（相当于B树的下溢）
+            if (isBlack(sibling.left) && isBlack(sibling.right)) {
+                boolean isParentBlack = isBlack(parent);
+                black(parent);
+                red(sibling);
+                // 如果父节点是黑色的，将父节点当成删除的节点，递归
+                if (isParentBlack) afterRemove(parent, null);
+            } else { // 兄弟节点至少有一个红色子节点，向兄弟节点借元素（相当于B树的跟兄弟节点借）
                 // RL 情况，要先旋转成 RR 情况
-                if (sibling.right == null) {
+                if (isBlack(sibling.right)) {
                     rotateRight(sibling);
                     sibling = parent.right;
                 }
@@ -142,14 +147,9 @@ public class RedBlackTree<T> extends BalanceBinarySearchTree<T> {
                 black(parent);
                 black(sibling.right);
                 rotateLeft(parent);
-            } else { // 兄弟节点没有一个红色子节点（相当于B树的下溢）
-                boolean isParentBlack = isBlack(parent);
-                black(parent);
-                red(sibling);
-                if (isParentBlack) afterRemove(parent, null);
             }
-        } else {
-            // 兄弟节点为红色
+        } else { // 被删除的节点是父节点的右子节点，兄弟节点在左边
+            // 兄弟节点为红色，旋转父节点，然后兄弟节点就变成了原先红色兄弟节点的黑色子节点，情况回归到黑色兄弟节点的情况
             if (isRed(sibling)) {
                 black(sibling);
                 red(parent);
@@ -157,23 +157,23 @@ public class RedBlackTree<T> extends BalanceBinarySearchTree<T> {
                 sibling = parent.left;
             }
 
-            // 兄弟节点至少有一个红色子节点（相当于B树的跟兄弟节点借）
-            if (isRed(sibling.left) || isRed(sibling.right)) {
+            // 兄弟节点没有一个红色子节点，父节点要向下跟兄弟节点合并（相当于B树的下溢）
+            if (isBlack(sibling.left) && isBlack(sibling.right)) {
+                boolean isParentBlack = isBlack(parent);
+                black(parent);
+                red(sibling);
+                if (isParentBlack) afterRemove(parent, null);
+            } else { // 兄弟节点至少有一个红色子节点，想兄弟借元素（相当于B树的跟兄弟节点借）
                 // LR 情况，要先旋转成 LL 情况
-                if (sibling.left == null) {
+                if (isBlack(sibling.left)) {
                     rotateLeft(sibling);
                     sibling = parent.left;
                 }
                 // 统一处理 LL 情况
                 color(sibling, colorOf(parent)); // sibling 继承 parent 的颜色
                 black(parent);
-                black(sibling.right);
+                black(sibling.left);
                 rotateRight(parent);
-            } else { // 兄弟节点没有一个红色子节点（相当于B树的下溢）
-                boolean isParentBlack = isBlack(parent);
-                black(parent);
-                red(sibling);
-                if (isParentBlack) afterRemove(parent, null);
             }
         }
     }

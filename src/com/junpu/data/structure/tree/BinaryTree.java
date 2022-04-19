@@ -218,23 +218,19 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
     protected Node<T> predecessor(Node<T> node) {
         if (node == null) return null;
 
-        Node<T> tmp;
-        if (node.left != null) {
-            tmp = node.left;
+        Node<T> tmp = node.left;
+        // 左子树不为空，前驱节点在左子树中，left.right.right...
+        if (tmp != null) {
             while (tmp.right != null) {
                 tmp = tmp.right;
             }
             return tmp;
         }
 
-        if (node.parent != null) {
-            tmp = node;
-            while (tmp.parent != null && tmp == tmp.parent.left) {
-                tmp = tmp.parent;
-            }
-            return tmp.parent;
+        while (node.isLeftChild()) {
+            node = node.parent;
         }
-        return null;
+        return node.parent;
     }
 
     /**
@@ -242,23 +238,20 @@ public abstract class BinaryTree<T> implements Tree<T>, BinaryTreeInfo {
      */
     protected Node<T> successor(Node<T> node) {
         if (node == null) return null;
-        Node<T> tmp;
-        if (node.right != null) {
-            tmp = node.right;
+        Node<T> tmp = node.right;
+        // 右子树不为空，后继节点在右子树中，right.left.left...
+        if (tmp != null) {
             while (tmp.left != null) {
                 tmp = tmp.left;
             }
             return tmp;
         }
 
-        if (node.parent != null) {
-            tmp = node;
-            while (tmp.parent != null && tmp == tmp.parent.right) {
-                tmp = tmp.parent;
-            }
-            return tmp.parent;
+        // 右子树为空，后继节点有可能在父节点、祖父节点中
+        while (node.isRightChild()) {
+            node = node.parent;
         }
-        return null;
+        return node.parent;
     }
 
     protected static class Node<T> {

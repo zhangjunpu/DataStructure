@@ -4,15 +4,20 @@ import com.junpu.data.structure.list.ArrayList;
 import com.junpu.data.structure.list.LinkedList;
 import com.junpu.data.structure.list.List;
 import com.junpu.data.structure.list.SingleLinkedList;
+import com.junpu.data.structure.map.HashMap;
 import com.junpu.data.structure.map.Map;
 import com.junpu.data.structure.map.TreeMap;
+import com.junpu.data.structure.model.Key;
+import com.junpu.data.structure.model.SubKey1;
+import com.junpu.data.structure.model.SubKey2;
 import com.junpu.data.structure.set.Set;
 import com.junpu.data.structure.set.TreeSet;
-import com.junpu.data.structure.tree.AVLTree;
-import com.junpu.data.structure.tree.BinarySearchTree;
-import com.junpu.data.structure.tree.RedBlackTree;
-import com.junpu.data.structure.tree.Visitor;
+import com.junpu.data.structure.tree.*;
 import com.junpu.data.structure.tree.printer.BinaryTrees;
+import com.junpu.data.structure.utils.Asserts;
+import com.junpu.data.structure.utils.Times;
+import com.junpu.data.structure.utils.file.FileInfo;
+import com.junpu.data.structure.utils.file.Files;
 
 /**
  * @author junpu
@@ -23,16 +28,139 @@ public class Main {
 //        ListTest.linkedListTest();
 //        TreeTest.rbTreeTest();
 //        testSet();
-        testMap();
+//        MapTest.testTreeMap();
+        MapTest.testHashMap();
+//        TreeTest.test();
     }
 
-    private static void testMap() {
-        Map<Object, Integer> map = new TreeMap<>();
-        map.put(1, 1);
-        map.put(2, 2);
-        map.put(3, 3);
-        map.put(2, 4);
-        System.out.println(map.size());
+    /**
+     * Map 测试类
+     *
+     * @author junpu
+     * @date 2022/4/18
+     */
+    private static class MapTest {
+
+        private static void testHashMap() {
+            test1();
+            test2(new HashMap<>());
+            test3(new HashMap<>());
+            test4(new HashMap<>());
+            test5(new HashMap<>());
+        }
+
+        static void test1Map(Map<String, Integer> map, String[] words) {
+            Times.test(map.getClass().getName(), () -> {
+                for (String word : words) {
+                    Integer count = map.get(word);
+                    count = count == null ? 0 : count;
+                    map.put(word, count + 1);
+                }
+                System.out.println(map.size()); // 17188
+
+                int count = 0;
+                for (String word : words) {
+                    Integer i = map.get(word);
+                    count += i == null ? 0 : i;
+                    map.remove(word);
+                }
+                Asserts.test(count == words.length);
+                Asserts.test(map.size() == 0);
+            });
+        }
+
+        static void test1() {
+            String filepath = "D:\\WorkSpaces\\SDK\\java src\\java\\util\\concurrent";
+            FileInfo fileInfo = Files.read(filepath, null);
+            String[] words = fileInfo.words();
+
+            System.out.println("总行数：" + fileInfo.getLines());
+            System.out.println("单词总数：" + words.length);
+            System.out.println("-------------------------------------");
+
+//            test1Map(new TreeMap<>(), words);
+            test1Map(new HashMap<>(), words);
+//            test1Map(new LinkedHashMap<>(), words);
+        }
+
+        static void test2(HashMap<Object, Integer> map) {
+            for (int i = 1; i <= 20; i++) {
+                map.put(new Key(i), i);
+            }
+            for (int i = 5; i <= 7; i++) {
+                map.put(new Key(i), i + 5);
+            }
+            Asserts.test(map.size() == 20);
+            Asserts.test(map.get(new Key(4)) == 4);
+            Asserts.test(map.get(new Key(5)) == 10);
+            Asserts.test(map.get(new Key(6)) == 11);
+            Asserts.test(map.get(new Key(7)) == 12);
+            Asserts.test(map.get(new Key(8)) == 8);
+        }
+
+        static void test3(HashMap<Object, Integer> map) {
+            map.put(null, 1); // 1
+            map.put(new Object(), 2); // 2
+            map.put("jack", 3); // 3
+            map.put(10, 4); // 4
+            map.put(new Object(), 5); // 5
+            map.put("jack", 6);
+            map.put(10, 7);
+            map.put(null, 8);
+            map.put(10, null);
+            Asserts.test(map.size() == 5);
+            Asserts.test(map.get(null) == 8);
+            Asserts.test(map.get("jack") == 6);
+            Asserts.test(map.get(10) == null);
+            Asserts.test(map.get(new Object()) == null);
+            Asserts.test(map.containsKey(10));
+            Asserts.test(map.containsKey(null));
+            Asserts.test(map.containsValue(null));
+            Asserts.test(map.containsValue(1) == false);
+        }
+
+        static void test4(HashMap<Object, Integer> map) {
+            map.put("jack", 1);
+            map.put("rose", 2);
+            map.put("jim", 3);
+            map.put("jake", 4);
+            map.remove("jack");
+            map.remove("jim");
+            for (int i = 1; i <= 10; i++) {
+                map.put("test" + i, i);
+                map.put(new Key(i), i);
+            }
+            for (int i = 5; i <= 7; i++) {
+                Asserts.test(map.remove(new Key(i)) == i);
+            }
+            for (int i = 1; i <= 3; i++) {
+                map.put(new Key(i), i + 5);
+            }
+            Asserts.test(map.size() == 19);
+            Asserts.test(map.get(new Key(1)) == 6);
+            Asserts.test(map.get(new Key(2)) == 7);
+            Asserts.test(map.get(new Key(3)) == 8);
+            Asserts.test(map.get(new Key(4)) == 4);
+            Asserts.test(map.get(new Key(5)) == null);
+            Asserts.test(map.get(new Key(6)) == null);
+            Asserts.test(map.get(new Key(7)) == null);
+            Asserts.test(map.get(new Key(8)) == 8);
+            map.traversal((key, value) -> {
+                System.out.println(key + "_" + value);
+                return false;
+            });
+        }
+
+        static void test5(HashMap<Object, Integer> map) {
+            for (int i = 1; i <= 20; i++) {
+                map.put(new SubKey1(i), i);
+            }
+            map.put(new SubKey2(1), 5);
+            Asserts.test(map.get(new SubKey1(1)) == 5);
+            Asserts.test(map.get(new SubKey2(1)) == 5);
+            Asserts.test(map.size() == 20);
+        }
+
     }
 
     private static void testSet() {
@@ -60,6 +188,34 @@ public class Main {
      * @date 2022/4/11
      */
     private static class TreeTest {
+
+        static void test() {
+            String filepath = "D:\\WorkSpaces\\SDK\\java src\\java\\util\\concurrent";
+            FileInfo fileInfo = Files.read(filepath, null);
+            String[] words = fileInfo.words();
+
+            System.out.println("总行数：" + fileInfo.getLines());
+            System.out.println("单词总数：" + words.length);
+            System.out.println("-------------------------------------");
+
+//            testTree(new AVLTree<>(), words);
+            testTree(new RedBlackTree<>(), words);
+        }
+
+        static void testTree(Tree<String> tree, String[] words) {
+            Times.test(tree.getClass().getName(), () -> {
+                for (String word : words) {
+                    tree.add(word);
+                }
+                System.out.println(tree.size()); // 17188
+
+                for (String word : words) {
+                    tree.remove(word);
+                }
+                Asserts.test(tree.size() == 0);
+            });
+        }
+
         private static void rbTreeTest() {
             int[] arr = new int[]{77, 97, 40, 26, 34, 39, 14, 62, 82, 6, 96, 84, 72, 66, 80};
             RedBlackTree<Integer> rb = new RedBlackTree<>();

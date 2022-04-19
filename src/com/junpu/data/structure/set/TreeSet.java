@@ -1,60 +1,53 @@
 package com.junpu.data.structure.set;
 
-import com.junpu.data.structure.tree.RedBlackTree;
+import com.junpu.data.structure.map.Map;
+import com.junpu.data.structure.map.TreeMap;
 import com.junpu.data.structure.tree.Visitor;
 
-import java.util.Comparator;
-
 /**
+ * Tree Map
+ *
  * @author junpu
  * @date 2022/4/11
  */
 public class TreeSet<T> implements Set<T> {
 
-    private final RedBlackTree<T> tree;
-
-    public TreeSet() {
-        this(null);
-    }
-
-    public TreeSet(Comparator<T> comparator) {
-        tree = new RedBlackTree<>(comparator);
-    }
+    private final Map<T, Object> map = new TreeMap<>();
 
     @Override
     public int size() {
-        return tree.size();
+        return map.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return tree.isEmpty();
+        return map.isEmpty();
     }
 
     @Override
     public void clear() {
-        tree.clear();
+        map.clear();
     }
 
     @Override
     public boolean contains(T item) {
-        return tree.contains(item);
+        return map.containsKey(item);
     }
 
     @Override
     public void add(T item) {
-        tree.add(item);
+        map.put(item, null);
     }
 
     @Override
     public void remove(T item) {
-        tree.remove(item);
+        map.remove(item);
     }
 
     @Override
     public void traversal(Visitor<T> visitor) {
         if (visitor == null) return;
-        tree.inorderTraversal(visitor);
+        map.traversal((key, value) -> visitor.visit(key));
     }
 
 }
