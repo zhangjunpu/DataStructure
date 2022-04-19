@@ -1,5 +1,8 @@
 package com.junpu.data.structure.map;
 
+import com.junpu.data.structure.tree.printer.BinaryTreeInfo;
+import com.junpu.data.structure.tree.printer.BinaryTrees;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -7,6 +10,7 @@ import java.util.Queue;
 
 /**
  * HashMap
+ * 数组 + 红黑树，省略了链表
  *
  * @author junpu
  * @date 2022/4/17
@@ -43,6 +47,8 @@ public class HashMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
+        resize();
+
         int index = index(key);
 
         // 取出 index 位置的红黑树根节点
@@ -230,6 +236,111 @@ public class HashMap<K, V> implements Map<K, V> {
             }
         }
         return null;
+    }
+
+    /**
+     * 扩容
+     */
+    private void resize() {
+        if (size <= DEFAULT_LOAD_FACTOR * table.length) return;
+        Node<K, V>[] oldTable = table;
+        table = new Node[oldTable.length << 1];
+
+        Queue<Node<K, V>> queue = new LinkedList<>();
+        for (Node<K, V> root : oldTable) {
+            if (root == null) continue;
+            queue.offer(root);
+            while (!queue.isEmpty()) {
+                Node<K, V> node = queue.poll();
+                if (node.left != null) queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+                // 要在最后移动 node，否则 node 的关系已经变更了
+                moveNode(node);
+            }
+        }
+    }
+
+    /**
+     * 移动 node 节点到新 table 中
+     */
+    private void moveNode(Node<K, V> newNode) {
+        // 重置状态
+        newNode.parent = null;
+        newNode.left = null;
+        newNode.right = null;
+        newNode.color = RED;
+
+        int index = index(newNode);
+        Node<K, V> root = table[index];
+        // 如果是根节点
+        if (root == null) {
+            table[index] = root = newNode;
+            afterAdd(root);
+            return;
+        }
+
+        Node<K, V> parent, node = root;
+        int cmp;
+        K k1 = newNode.key;
+        int h1 = newNode.hash;
+        do {
+            parent = node;
+            K k2 = node.key;
+            int h2 = node.hash;
+            // 移动 node，node.key 彼此之间不可能相同，所以删掉了 equals 和扫描的判断条件
+            if (h1 > h2) {
+                cmp = 1;
+            } else if (h1 < h2) {
+                cmp = -1;
+            } else if (k1 != null && k2 != null &&
+                    k1.getClass() == k2.getClass() &&
+                    k1 instanceof Comparable &&
+                    ((cmp = ((Comparable<K>) k1).compareTo(k2)) != 0)) {
+            } else {
+                cmp = System.identityHashCode(k1) - System.identityHashCode(k2);
+            }
+
+            if (cmp > 0) {
+                node = node.right;
+            } else if (cmp < 0) {
+                node = node.left;
+            }
+        } while (node != null);
+
+        newNode.parent = parent;
+        if (cmp > 0) parent.right = newNode;
+        if (cmp < 0) parent.left = newNode;
+        afterAdd(newNode);
+    }
+
+    public void print() {
+        for (int i = 0; i < table.length; i++) {
+            Node<K, V> root = table[i];
+            if (root == null) continue;
+            System.out.println("table [" + i + "]");
+            BinaryTrees.println(new BinaryTreeInfo() {
+                @Override
+                public Object root() {
+                    return root;
+                }
+
+                @Override
+                public Object left(Object node) {
+                    return ((Node<K, V>) node).left;
+                }
+
+                @Override
+                public Object right(Object node) {
+                    return ((Node<K, V>) node).right;
+                }
+
+                @Override
+                public Object string(Object node) {
+                    return node;
+                }
+            });
+            System.out.println("---------------------------------------------------");
+        }
     }
 
     private void afterAdd(Node<K, V> node) {
@@ -548,7 +659,7 @@ public class HashMap<K, V> implements Map<K, V> {
         @Override
         public String toString() {
             String str = color == RED ? "R_" : "";
-            return str + super.toString();
+            return str + "(" + key + ", " + value + ")";
         }
     }
 }

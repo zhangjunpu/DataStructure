@@ -78,7 +78,7 @@ public class Main {
             System.out.println("单词总数：" + words.length);
             System.out.println("-------------------------------------");
 
-//            test1Map(new TreeMap<>(), words);
+            test1Map(new TreeMap<>(), words);
             test1Map(new HashMap<>(), words);
 //            test1Map(new LinkedHashMap<>(), words);
         }
