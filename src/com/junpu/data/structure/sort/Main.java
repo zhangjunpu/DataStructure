@@ -11,7 +11,8 @@ public class Main {
         int[] arr = new int[]{5, 3, 9, 6, 1, 8, 2, 7, 4, 10, 11, 12};
 //        BubbleSort.sort(arr);
 //        SelectionSort.sort(arr);
-        InsertionSort.sort(arr);
+//        InsertionSort.sort(arr);
+        QuickSort.sort(arr);
 
 //        BubbleSort.sortOpt(arr);
         System.out.println(Arrays.toString(arr));
