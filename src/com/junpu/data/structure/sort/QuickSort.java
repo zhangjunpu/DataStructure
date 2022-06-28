@@ -6,21 +6,24 @@ package com.junpu.data.structure.sort;
  * @author junpu
  * @date 2022/6/27
  */
-public class QuickSort {
+public class QuickSort extends SortInt {
 
-    public static void sort(int[] arr) {
-        if (arr == null || arr.length < 2) return;
-        sort(arr, 0, arr.length);
+    @Override
+    public void sort() {
+        sort(0, arr.length);
     }
 
-    private static void sort(int[] arr, int begin, int end) {
-        if (begin >= end) return;
-        int mid = pivotIndex(arr, begin, end);
-        sort(arr, begin, mid);
-        sort(arr, mid + 1, end);
+    private void sort(int begin, int end) {
+        // 状态机
+        if (end - begin < 2) return;
+        // 找出轴点下标
+        int mid = pivotIndex(begin, end);
+        // 递归
+        sort(begin, mid);
+        sort(mid + 1, end);
     }
 
-    private static int pivotIndex(int[] arr, int begin, int end) {
+    private int pivotIndex(int begin, int end) {
         // 暂存轴点
         int pivot = arr[begin];
         end--;
@@ -31,6 +34,7 @@ public class QuickSort {
                     end--;
                 } else {
                     arr[begin] = arr[end];
+                    begin++;
                     break;
                 }
             }
@@ -40,6 +44,7 @@ public class QuickSort {
                     begin++;
                 } else {
                     arr[end] = arr[begin];
+                    end--;
                     break;
                 }
             }
@@ -50,4 +55,8 @@ public class QuickSort {
         return begin;
     }
 
+    @Override
+    protected String getSortName() {
+        return "快速排序";
+    }
 }

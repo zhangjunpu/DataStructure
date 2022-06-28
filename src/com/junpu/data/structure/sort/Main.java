@@ -1,20 +1,25 @@
 package com.junpu.data.structure.sort;
 
-import java.util.Arrays;
-
 /**
  * @author junpu
  * @date 2022/5/27
  */
 public class Main {
     public static void main(String[] args) {
-        int[] arr = new int[]{5, 3, 9, 6, 1, 8, 2, 7, 4, 10, 11, 12};
-//        BubbleSort.sort(arr);
-//        SelectionSort.sort(arr);
-//        InsertionSort.sort(arr);
-        QuickSort.sort(arr);
 
-//        BubbleSort.sortOpt(arr);
-        System.out.println(Arrays.toString(arr));
+        SortInt[] sorts = {
+//                new BubbleSort(),
+//                new BubbleSortOpt(),
+                new BubbleSortOpt2(),
+                new SelectionSort(),
+                new InsertionSort(),
+                new QuickSort()
+        };
+
+        for (SortInt sort : sorts) {
+            int[] arr = new int[]{5, 3, 9, 6, 1, 8, 6, 2, 7, 4, 10, 11, 12};
+            sort.sort(arr);
+            System.out.println(sort);
+        }
     }
 }
