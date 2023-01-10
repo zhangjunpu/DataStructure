@@ -73,7 +73,7 @@ public class ArrayList<T> extends AbstractList<T> {
             }
         } else {
             for (int i = 0; i < items.length; i++) {
-                if (items[i] == item) return i;
+                if (item.equals(items[i])) return i;
             }
         }
         return -1;
@@ -85,7 +85,7 @@ public class ArrayList<T> extends AbstractList<T> {
     private void ensureCapacity(int minCapacity) {
         int oldCapacity = items.length;
         if (minCapacity <= oldCapacity) return;
-        int newCapacity = size + (size >> 1); // 容量每次扩大 1.5 倍
+        int newCapacity = oldCapacity + (oldCapacity >> 1); // 容量每次扩大 1.5 倍
         T[] newItems = (T[]) new Object[newCapacity];
         System.arraycopy(items, 0, newItems, 0, size);
         items = newItems;
