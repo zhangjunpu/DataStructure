@@ -13,7 +13,7 @@ import com.junpu.data.structure.model.SubKey2;
 import com.junpu.data.structure.set.Set;
 import com.junpu.data.structure.set.TreeSet;
 import com.junpu.data.structure.tree.*;
-import com.junpu.data.structure.tree.printer.BinaryTrees;
+import com.mj.tree.printer.BinaryTrees;
 import com.junpu.data.structure.utils.Asserts;
 import com.junpu.data.structure.utils.Times;
 import com.junpu.data.structure.utils.file.FileInfo;

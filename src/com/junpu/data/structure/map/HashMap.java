@@ -1,7 +1,7 @@
 package com.junpu.data.structure.map;
 
-import com.junpu.data.structure.tree.printer.BinaryTreeInfo;
-import com.junpu.data.structure.tree.printer.BinaryTrees;
+import com.mj.tree.printer.BinaryTreeInfo;
+import com.mj.tree.printer.BinaryTrees;
 
 import java.util.Arrays;
 import java.util.LinkedList;

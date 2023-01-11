@@ -1,6 +1,6 @@
 package com.junpu.data.structure.tree;
 
-import com.junpu.data.structure.tree.printer.BinaryTreeInfo;
+import com.mj.tree.printer.BinaryTreeInfo;
 
 import java.util.LinkedList;
 import java.util.Queue;

@@ -1,4 +1,4 @@
-package com.junpu.data.structure.tree.printer;
+package com.mj.tree.printer;
 
 public class Strings {
 	public static String repeat(String string, int count) {

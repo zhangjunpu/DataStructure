@@ -1,6 +1,6 @@
 package com.junpu.data.structure.heap;
 
-import com.junpu.data.structure.tree.printer.BinaryTreeInfo;
+import com.mj.tree.printer.BinaryTreeInfo;
 
 import java.util.Comparator;
 

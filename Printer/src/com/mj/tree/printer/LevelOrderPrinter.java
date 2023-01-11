@@ -1,4 +1,4 @@
-package com.junpu.data.structure.tree.printer;
+package com.mj.tree.printer;
 
 import java.util.ArrayList;
 import java.util.Collection;
